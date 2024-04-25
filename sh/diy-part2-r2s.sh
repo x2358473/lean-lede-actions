@@ -1,4 +1,4 @@
-#!/bin/bash
+c#!/bin/bash
 #
 # https://github.com/P3TERX/Actions-OpenWrt
 # File name: diy-part2.sh
@@ -14,7 +14,7 @@
 sed -i 's/192.168.1.1/192.168.24.1/g' package/base-files/files/bin/config_generate
 
 # Modify default theme
-#sed -i 's/luci-theme-bootstrap/luci-theme-design/g' feeds/luci/collections/luci/Makefile
+sed -i 's/luci-theme-bootstrap/luci-theme-design/g' feeds/luci/collections/luci/Makefile
 
 # Modify hostname
 sed -i 's/OpenWrt/R2S-OpenWrt/g' package/base-files/files/bin/config_generate
