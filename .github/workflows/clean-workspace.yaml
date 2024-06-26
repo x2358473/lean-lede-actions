@@ -1,4 +1,4 @@
-name: Clean up workspace
+name: Cleanup Workspace
 
 on:
   push:
@@ -13,14 +13,18 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Run cleanup script
+    - name: Clean workspace
       run: |
-        # 清理临时文件和目录
-        rm -rf ${{ github.workspace }}/temp/*
-        rm -rf ${{ github.workspace }}/cache/*
-
-        # 清理特定目录
-        rm -rf ${{ github.workspace }}/path/to/specific/directory/*
+        # 打印当前工作空间中的文件
+        echo "Before cleanup:"
+        ls -al ${{ github.workspace }}
         
+        # 删除所有文件和目录
+        rm -rf ${{ github.workspace }}/*
+
+        # 打印清理后的工作空间状态
+        echo "After cleanup:"
+        ls -al ${{ github.workspace }}
+
         # 打印磁盘使用情况
         df -h
