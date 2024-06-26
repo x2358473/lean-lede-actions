@@ -1,4 +1,4 @@
-name: Cleanup Workspace
+name: Cleanup and Reset Workflow Space
 
 on:
   push:
@@ -15,16 +15,28 @@ jobs:
 
     - name: Clean workspace
       run: |
-        # 打印当前工作空间中的文件
         echo "Before cleanup:"
-        ls -al ${{ github.workspace }}
+        df -h
         
-        # 删除所有文件和目录
+        # 删除工作空间中的所有文件
         rm -rf ${{ github.workspace }}/*
+        
+        echo "Workspace cleaned."
+        
+        # 清理 Docker 容器和镜像
+        docker system prune -af --volumes
+        
+        echo "Docker cleaned."
+        
+        # 清理系统缓存和临时文件
+        sudo rm -rf /var/cache/*
+        sudo rm -rf /tmp/*
+        
+        # 清理日志文件
+        sudo find /var/log -type f -delete
+        
+        echo "System cache, temporary files, and logs cleaned."
 
-        # 打印清理后的工作空间状态
+        # 打印清理后的磁盘使用情况
         echo "After cleanup:"
-        ls -al ${{ github.workspace }}
-
-        # 打印磁盘使用情况
         df -h
