@@ -17,8 +17,6 @@ jobs:
       run: |
         echo "Before cleanup:"
         df -h
-        # 删除构建
-        make clean
         
         # 删除工作空间中的所有文件
         rm -rf ${{ github.workspace }}/*
