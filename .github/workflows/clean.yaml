@@ -1,9 +1,8 @@
 name: Cleanup and Reset Workflow Space
 
 on:
-  push:
-    branches:
-      - clean
+  repository_dispatch:
+  workflow_dispatch:
 
 jobs:
   cleanup:
