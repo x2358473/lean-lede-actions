@@ -3,7 +3,7 @@ name: Cleanup and Reset Workflow Space
 on:
   push:
     branches:
-      - main
+      - clean
 
 jobs:
   cleanup:
