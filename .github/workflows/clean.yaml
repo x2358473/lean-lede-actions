@@ -1,0 +1,56 @@
+name: Cleanup and Reset Workflow Space
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 释放磁盘空间
+      uses: jlumbroso/free-disk-space@main
+      with:
+        # this might remove tools that are actually needed,
+        # if set to "true" but frees about 6 GB
+        tool-cache: true
+        # all of these default to true, but feel free to set to
+        # "false" if necessary for your workflow
+        android: true
+        dotnet: true
+        haskell: true
+        large-packages: true
+        swap-storage: true
+
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Clean workspace
+      run: |
+        echo "Before cleanup:"
+        df -h
+        
+        # 删除工作空间中的所有文件
+        rm -rf ${{ github.workspace }}/*
+        
+        echo "Workspace cleaned."
+        
+        # 清理 Docker 容器和镜像
+        docker system prune -af --volumes
+        
+        echo "Docker cleaned."
+        
+        # 清理系统缓存和临时文件
+        sudo rm -rf /var/cache/*
+        sudo rm -rf /tmp/*
+        
+        # 清理日志文件
+        sudo find /var/log -type f -delete
+        
+        echo "System cache, temporary files, and logs cleaned."
+
+        # 打印清理后的磁盘使用情况
+        echo "After cleanup:"
+        df -h
