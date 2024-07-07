@@ -1,8 +1,76 @@
-- name: Clean up disk space
-  run: |
-    sudo rm -rf /usr/local/lib/android
-    sudo rm -rf /opt/ghc
-    sudo rm -rf /usr/share/dotnet
-    sudo rm -rf /usr/share/swift
-    sudo apt-get clean
-    sudo rm -rf /var/lib/apt/lists/*
+name: CI Pipeline
+
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 检出代码
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 清理磁盘空间
+    - name: Clean up disk space
+      run: |
+        echo "Cleaning up disk space..."
+        # 删除 Android SDK
+        sudo rm -rf /usr/local/lib/android
+        # 删除 GHC
+        sudo rm -rf /opt/ghc
+        # 删除 .NET SDK
+        sudo rm -rf /usr/share/dotnet
+        # 删除 Swift
+        sudo rm -rf /usr/share/swift
+        # 清理 apt-get 缓存
+        sudo apt-get clean
+        sudo rm -rf /var/lib/apt/lists/*
+        # 删除手册页和文档
+        sudo rm -rf /usr/share/man
+        sudo rm -rf /usr/share/doc
+        sudo rm -rf /usr/share/locale
+        # 显示剩余磁盘空间
+        df -h
+
+    # 缓存依赖项
+    - name: Cache Node.js modules
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    # 安装依赖项
+    - name: Install dependencies
+      run: npm install
+
+    # 构建应用程序
+    - name: Build application
+      run: npm run build
+
+    # 测试应用程序
+    - name: Test application
+      run: npm test
+
+    # 上传构建工件
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifact
+        path: path/to/build/output
+
+    # 下载构建工件 (在另一个作业中使用时)
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifact
+        path: path/to/download
+
+    # 进一步清理磁盘空间
+    - name: Final cleanup
+      run: |
+        echo "Final cleanup..."
+        rm -rf node_modules
+        df -h
