@@ -1,4 +1,4 @@
-name: Build X86_64-sq Version OpenWrt
+name: Build X86_64-sq
 
 on:
   repository_dispatch:
