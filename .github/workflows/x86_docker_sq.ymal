@@ -10,7 +10,7 @@
 # See /LICENSE for more information.
 #
 
-name: x86-ext4-docker Builder
+name: x86-sq-docker Builder
 
 on:
   repository_dispatch:
